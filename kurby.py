@@ -29,8 +29,14 @@ class KurbyWindow(arcade.Window):
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.dot_sprite = ModelSprite('images/player.png', model=self.world.player)
 
+    def on_key_press(self, key, key_modifiers):
+        if not self.world.is_start():
+            self.world.start()
+        self.world.on_key_press(key, key_modifiers)
+
     def update(self, delta):
         self.world.update(delta)
+        self.world.limit_screen(SCREEN_WIDTH)
 
     def on_draw(self):
         arcade.start_render()

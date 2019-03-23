@@ -67,9 +67,12 @@ class World:
         self.width = width
         self.height = height
         self.player = Player(self, width // 2, height // 6 )
-
         self.state = World.STATE_FROZEN
-        self.coin = [Coin(self, width - 200, height),Coin(self, width - 200, height+100)]
+        self.coin = [Coin(self, width - 200, height),Coin(self, width - 200, height + 200)]
+        self.score = 0
+
+    def increase_score(self):
+        self.score += 1
 
     def start(self):
         self.state = World.STATE_START
@@ -107,3 +110,4 @@ class World:
             i.update(delta)
             if i.hit(self.player):
                 self.die()
+                self.increase_score()

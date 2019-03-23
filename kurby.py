@@ -57,6 +57,12 @@ class KurbyWindow(arcade.Window):
         for i in self.coin_sprite:
             i.draw()
         self.dot_sprite.draw()
+        # Draw the score
+        arcade.draw_text(str(self.world.score),
+            self.width - 60,
+            self.height - 30,
+            arcade.color.BLACK,
+            20,)
 
 
 def main():

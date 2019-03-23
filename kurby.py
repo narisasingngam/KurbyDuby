@@ -20,14 +20,25 @@ class ModelSprite(arcade.Sprite):
         self.sync_with_model()
         super().draw()
 
+class CoinSprite:
+    def __init__(self,model):
+        self.model = model
+        self.coin_sprite = arcade.Sprite('images/coin.png')
+
+    def draw(self):
+        self.coin_sprite.set_position(self.model.x, self.model.y)
+        self.coin_sprite.draw()
+
 
 class KurbyWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
-        arcade.set_background_color(arcade.color.WHITE)
+        self.background = arcade.load_texture("images/background.png")
+
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.dot_sprite = ModelSprite('images/player.png', model=self.world.player)
+        self.coin_sprite = [CoinSprite(model=self.world.coin[0]),CoinSprite(model=self.world.coin[1])]
 
     def on_key_press(self, key, key_modifiers):
         if not self.world.is_start():
@@ -40,6 +51,11 @@ class KurbyWindow(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
+        # Draw the background texture
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        for i in self.coin_sprite:
+            i.draw()
         self.dot_sprite.draw()
 
 

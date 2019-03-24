@@ -38,7 +38,9 @@ class KurbyWindow(arcade.Window):
 
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.dot_sprite = ModelSprite('images/player.png', model=self.world.player)
-        self.coin_sprite = [CoinSprite(model=self.world.coin[0]),CoinSprite(model=self.world.coin[1])]
+        self.coin_sprite = [CoinSprite(model=self.world.coin[0]),CoinSprite(model=self.world.coin[1]),
+                            CoinSprite(model=self.world.coin[2]),CoinSprite(model=self.world.coin[3]),
+                            CoinSprite(model=self.world.coin[4])]
 
     def on_key_press(self, key, key_modifiers):
         if not self.world.is_start():
@@ -49,20 +51,34 @@ class KurbyWindow(arcade.Window):
         self.world.update(delta)
         self.world.limit_screen(SCREEN_WIDTH)
 
+    def draw_background(self):
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+    def draw_score(self):
+        arcade.draw_text('Score : '+str(self.world.score),
+                         self.width - 140,
+                         self.height - 30,
+                         arcade.color.BLACK,
+                         20, )
+    def draw_level(self):
+        arcade.draw_text('Level : '+str(self.world.level),
+                         self.width - 400,
+                         self.height - 30,
+                         arcade.color.BLACK,
+                         20, )
+
     def on_draw(self):
         arcade.start_render()
         # Draw the background texture
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        self.draw_background()
         for i in self.coin_sprite:
             i.draw()
         self.dot_sprite.draw()
         # Draw the score
-        arcade.draw_text(str(self.world.score),
-            self.width - 60,
-            self.height - 30,
-            arcade.color.BLACK,
-            20,)
+        self.draw_score()
+        #Draw level
+        self.draw_level()
+
 
 
 def main():

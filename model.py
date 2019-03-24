@@ -26,7 +26,7 @@ class Player:
 
         self.directon = DIR_STILL
 
-        self.vy = 2
+        # self.vy = 2
 
     def move(self,direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
@@ -43,16 +43,25 @@ class Coin:
         self.world = world
         self.x = x
         self.y = y
+        self.vy = 0.2
+
+    def up_speed(self):
+        Coin.COIN_SPEED += self.vy
+
+    def is_position_negative(self):
+        if self.y < 0:
+            self.y = 0
 
     def update(self,delta):
         self.y -= Coin.COIN_SPEED
+        self.is_position_negative()
         if self.y == 0 :
             self.y = SCREEN_HEIGHT
             self.random_position()
 
-
     def hit(self,player):
         return is_hit_coin(player.x, player.y,self.x, self.y)
+
     def random_position(self):
         self.x = randint(50,400)
 
@@ -68,11 +77,23 @@ class World:
         self.height = height
         self.player = Player(self, width // 2, height // 6 )
         self.state = World.STATE_FROZEN
-        self.coin = [Coin(self, width - 200, height),Coin(self, width - 200, height + 200)]
+        self.coin = [Coin(self, width - 200, height),Coin(self, width - 200, height + 100),
+                     Coin(self, width - 200, height + 200),Coin(self, width - 200, height + 300),
+                     Coin(self, width - 200, height + 400)]
         self.score = 0
+        self.level = 0
 
     def increase_score(self):
         self.score += 1
+
+    def get_score(self):
+        return self.score
+
+    def up_level(self):
+        if self.get_score()%5 == 0:
+            self.level += 1
+            for i in self.coin:
+                i.up_speed()
 
     def start(self):
         self.state = World.STATE_START
@@ -106,8 +127,11 @@ class World:
             return
 
         self.player.update(delta)
+
         for i in self.coin:
             i.update(delta)
             if i.hit(self.player):
-                self.die()
                 self.increase_score()
+                self.up_level()
+                i.y = SCREEN_HEIGHT
+                i.random_position()

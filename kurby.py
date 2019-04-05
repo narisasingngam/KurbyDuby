@@ -29,6 +29,15 @@ class CoinSprite:
         self.coin_sprite.set_position(self.model.x, self.model.y)
         self.coin_sprite.draw()
 
+class BombSprite:
+    def __init__(self,model):
+        self.model = model
+        self.bomb_sprite = arcade.Sprite('images/bombs.png')
+    
+    def draw(self):
+        self.bomb_sprite.set_position(self.model.x,self.model.y)
+        self.bomb_sprite.draw()
+
 
 class KurbyWindow(arcade.Window):
     def __init__(self, width, height):
@@ -41,6 +50,7 @@ class KurbyWindow(arcade.Window):
         self.coin_sprite = [CoinSprite(model=self.world.coin[0]),CoinSprite(model=self.world.coin[1]),
                             CoinSprite(model=self.world.coin[2]),CoinSprite(model=self.world.coin[3]),
                             CoinSprite(model=self.world.coin[4])]
+        self.bomb_sprite = BombSprite(model=self.world.bomb)
 
     def on_key_press(self, key, key_modifiers):
         if not self.world.is_start():
@@ -78,6 +88,8 @@ class KurbyWindow(arcade.Window):
         self.draw_score()
         #Draw level
         self.draw_level()
+
+        self.bomb_sprite.draw()
 
 
 

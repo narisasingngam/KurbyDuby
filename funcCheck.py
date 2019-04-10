@@ -1,4 +1,4 @@
-def is_hit_coin(player_x, player_y, coin_x, coin_y):
+def is_hit(player_x, player_y, coin_x, coin_y):
     if coin_y - 20 <= player_y + 20:
         if coin_y + 20 <= player_y - 20:
             return False

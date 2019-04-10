@@ -50,7 +50,8 @@ class KurbyWindow(arcade.Window):
         self.coin_sprite = [CoinSprite(model=self.world.coin[0]),CoinSprite(model=self.world.coin[1]),
                             CoinSprite(model=self.world.coin[2]),CoinSprite(model=self.world.coin[3]),
                             CoinSprite(model=self.world.coin[4])]
-        self.bomb_sprite = BombSprite(model=self.world.bomb)
+        self.bomb_sprite = [BombSprite(model=self.world.bomb[0]),BombSprite(model=self.world.bomb[1]),
+                            BombSprite(model=self.world.bomb[2])]
 
     def on_key_press(self, key, key_modifiers):
         if not self.world.is_start():
@@ -88,8 +89,8 @@ class KurbyWindow(arcade.Window):
         self.draw_score()
         #Draw level
         self.draw_level()
-
-        self.bomb_sprite.draw()
+        for j in self.bomb_sprite:
+            j.draw()
 
 
 

@@ -1,6 +1,6 @@
 from random import randint
 
-from funcCheck import is_hit_coin
+from funcCheck import is_hit
 import arcade.key
 
 DIR_STILL = 0
@@ -35,7 +35,7 @@ class Player:
 
 
 class Bomb:
-    BOMB_SPEED = 1
+    BOMB_SPEED = 2
 
     def __init__(self, world, x, y):
         self.world = world
@@ -48,6 +48,11 @@ class Bomb:
 
     def update(self, delta):
         self.y -= Bomb.BOMB_SPEED
+        if self.y == 0:
+            self.y = SCREEN_HEIGHT
+            self.x = randint(50, 400)
+    def hit(self, player):
+        return is_hit(player.x, player.y, self.x, self.y)
 
 
 class Coin:
@@ -74,7 +79,7 @@ class Coin:
             self.random_position()
 
     def hit(self, player):
-        return is_hit_coin(player.x, player.y, self.x, self.y)
+        return is_hit(player.x, player.y, self.x, self.y)
 
     def random_position(self):
         self.x = randint(50, 400)
@@ -97,7 +102,9 @@ class World:
             Coin(self, width - 200, height + 300),
             Coin(self, width - 200, height + 400),
         ]
-        self.bomb = Bomb(self, width // 4, height + 50)
+        self.bomb = [Bomb(self, width // 4, height + 100),
+                    Bomb(self, width // 2, height + 300),
+                    Bomb(self, width // 6, height + 400)]
         self.score = 0
         self.level = 0
 
@@ -149,8 +156,11 @@ class World:
 
         self.player.update(delta)
         
-        if self.get_level() >= 5:
-            self.bomb.update(delta)
+        if self.get_level() >= 3:
+            for j in self.bomb:
+                j.update(delta)
+                if j.hit(self.player):
+                    arcade.close_window()
 
         for i in self.coin:
             i.update(delta)

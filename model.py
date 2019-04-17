@@ -1,6 +1,7 @@
 from random import randint
 
 from funcCheck import is_hit
+from game_variables import *
 import arcade.key
 
 DIR_STILL = 0
@@ -32,6 +33,29 @@ class Player:
         # self.y += self.vy
         self.move(self.directon)
         # self.vy += 1
+
+class Monster:
+    MONSTER_SPEED = 1
+    def __init__(self, world, x, y):
+        self.world = world
+        self.x = x
+        self.y = y
+        self.temp = 200
+    def update(self,delta):
+        self.y -= Monster.MONSTER_SPEED
+        if self.y % 15 == 0:
+            if self.x == self.temp:
+                self.x = self.temp+50
+            else:
+                self.x = self.temp
+        if self.y == 0:
+            self.y = SCREEN_HEIGHT
+            self.x = randint(50, 400)
+            self.temp = self.x
+
+    def hit(self, player):
+        return is_hit(player.x, player.y, self.x, self.y)
+    
 
 
 class Bomb:
@@ -73,10 +97,10 @@ class Coin:
 
     def update(self, delta):
         self.y -= Coin.COIN_SPEED
-        self.is_position_negative()
-        if self.y == 0:
+        # self.is_position_negative()
+        if self.y < -20:
             self.y = SCREEN_HEIGHT
-            self.random_position()
+            self.x = randint(50, 400)
 
     def hit(self, player):
         return is_hit(player.x, player.y, self.x, self.y)
@@ -96,17 +120,19 @@ class World:
         self.player = Player(self, width // 2, height // 6)
         self.state = World.STATE_FROZEN
         self.coin = [
-            Coin(self, width - 200, height),
+            Coin(self, width - 100, height),
             Coin(self, width - 200, height + 100),
-            Coin(self, width - 200, height + 200),
-            Coin(self, width - 200, height + 300),
+            Coin(self, width - 250, height + 200),
+            Coin(self, width - 300, height + 300),
             Coin(self, width - 200, height + 400),
         ]
         self.bomb = [Bomb(self, width // 4, height + 100),
                     Bomb(self, width // 2, height + 300),
                     Bomb(self, width // 6, height + 400)]
+        self.monster = Monster(self,width//2,height + 100)
         self.score = 0
         self.level = 0
+        self.hp = 100
 
     def increase_score(self):
         self.score += 1
@@ -143,6 +169,12 @@ class World:
 
     def is_dead(self):
         return self.state == World.STATE_DEAD
+    
+    def player_hit(self):
+        if self.hp != 25:
+            self.hp -= 25
+        else:
+            arcade.close_window()
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.RIGHT:
@@ -156,17 +188,25 @@ class World:
 
         self.player.update(delta)
         
-        if self.get_level() >= 3:
+        if self.get_level() >= 5:
             for j in self.bomb:
                 j.update(delta)
                 if j.hit(self.player):
-                    arcade.close_window()
+                    j.y = SCREEN_HEIGHT
+                    self.player_hit()
 
         for i in self.coin:
             i.update(delta)
             if i.hit(self.player):
+                arcade.play_sound(SOUNDS['point'])
                 self.increase_score()
                 self.up_level()
                 i.y = SCREEN_HEIGHT
                 i.random_position()
+
+        if self.get_level() >= 2:
+            self.monster.update(delta)
+            if self.monster.hit(self.player):
+                self.monster.y = SCREEN_HEIGHT
+                self.player_hit()
 

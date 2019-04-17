@@ -38,6 +38,14 @@ class BombSprite:
         self.bomb_sprite.set_position(self.model.x,self.model.y)
         self.bomb_sprite.draw()
 
+class MonsterSprite:
+    def __init__(self,model):
+        self.model = model
+        self.monster_sprite = arcade.Sprite('images/monster.png')
+    def draw(self):
+        self.monster_sprite.set_position(self.model.x,self.model.y)
+        self.monster_sprite.draw()
+
 
 class KurbyWindow(arcade.Window):
     def __init__(self, width, height):
@@ -52,6 +60,7 @@ class KurbyWindow(arcade.Window):
                             CoinSprite(model=self.world.coin[4])]
         self.bomb_sprite = [BombSprite(model=self.world.bomb[0]),BombSprite(model=self.world.bomb[1]),
                             BombSprite(model=self.world.bomb[2])]
+        self.monster_sprite = MonsterSprite(model=self.world.monster)
 
     def on_key_press(self, key, key_modifiers):
         if not self.world.is_start():
@@ -67,16 +76,23 @@ class KurbyWindow(arcade.Window):
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
     def draw_score(self):
         arcade.draw_text('Score : '+str(self.world.score),
-                         self.width - 140,
+                         self.width - 80,
                          self.height - 30,
                          arcade.color.BLACK,
-                         20, )
+                         12, )
     def draw_level(self):
         arcade.draw_text('Level : '+str(self.world.level),
                          self.width - 400,
                          self.height - 30,
                          arcade.color.BLACK,
-                         20, )
+                         12, )
+    def draw_hp(self):
+        arcade.draw_text('HP : '+str(self.world.hp)+'/100',
+                         self.width - 400,
+                         self.height - 60,
+                         arcade.color.BLACK,
+                         12, )
+
 
     def on_draw(self):
         arcade.start_render()
@@ -91,6 +107,8 @@ class KurbyWindow(arcade.Window):
         self.draw_level()
         for j in self.bomb_sprite:
             j.draw()
+        self.monster_sprite.draw()
+        self.draw_hp()
 
 
 

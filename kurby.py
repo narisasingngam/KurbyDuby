@@ -95,7 +95,6 @@ class KurbyWindow(arcade.Window):
                          arcade.color.BLACK,
                          12, )
         temp = 0
-
         if self.world.hp != self.num_hp:
             self.hp.pop()
             self.num_hp = self.world.hp

@@ -186,7 +186,7 @@ class World:
 
         self.player.update(delta)
         
-        if self.get_level() >= 0:
+        if self.get_level() >= 5:
             for j in self.bomb:
                 j.update(delta)
                 if j.hit(self.player):

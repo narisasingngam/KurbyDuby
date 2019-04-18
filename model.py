@@ -21,9 +21,7 @@ class Player:
         self.world = world
         self.x = x
         self.y = y
-
         self.directon = DIR_STILL
-
         # self.vy = 2
 
     def move(self, direction):
@@ -132,7 +130,7 @@ class World:
         self.monster = Monster(self,width//2,height + 100)
         self.score = 0
         self.level = 0
-        self.hp = 100
+        self.hp = 2
 
     def increase_score(self):
         self.score += 1
@@ -171,8 +169,8 @@ class World:
         return self.state == World.STATE_DEAD
     
     def player_hit(self):
-        if self.hp != 25:
-            self.hp -= 25
+        if self.hp != 0:
+            self.hp -= 1
         else:
             arcade.close_window()
 
@@ -188,7 +186,7 @@ class World:
 
         self.player.update(delta)
         
-        if self.get_level() >= 5:
+        if self.get_level() >= 0:
             for j in self.bomb:
                 j.update(delta)
                 if j.hit(self.player):

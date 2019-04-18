@@ -61,6 +61,8 @@ class KurbyWindow(arcade.Window):
         self.bomb_sprite = [BombSprite(model=self.world.bomb[0]),BombSprite(model=self.world.bomb[1]),
                             BombSprite(model=self.world.bomb[2])]
         self.monster_sprite = MonsterSprite(model=self.world.monster)
+        self.hp = [arcade.load_texture("images/pills.png"),arcade.load_texture("images/pills.png"),arcade.load_texture("images/pills.png")]
+        self.num_hp = 2
 
     def on_key_press(self, key, key_modifiers):
         if not self.world.is_start():
@@ -87,11 +89,20 @@ class KurbyWindow(arcade.Window):
                          arcade.color.BLACK,
                          12, )
     def draw_hp(self):
-        arcade.draw_text('HP : '+str(self.world.hp)+'/100',
+        arcade.draw_text('HP : ',
                          self.width - 400,
                          self.height - 60,
                          arcade.color.BLACK,
                          12, )
+        temp = 0
+
+        if self.world.hp != self.num_hp:
+            self.hp.pop()
+            self.num_hp = self.world.hp
+
+        for i in self.hp:
+            arcade.draw_texture_rectangle(self.width - 360+temp, self.height - 53,10, 12,i)
+            temp += 15
 
 
     def on_draw(self):

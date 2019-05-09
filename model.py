@@ -10,7 +10,7 @@ DIR_LEFT = 4
 
 DIR_OFFSETS = {DIR_STILL: (0, 0), DIR_RIGHT: (1, 0), DIR_LEFT: (-1, 0)}
 
-MOVEMENT_SPEED = 4
+MOVEMENT_SPEED = 5
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
@@ -22,15 +22,11 @@ class Player:
         self.x = x
         self.y = y
         self.directon = DIR_STILL
-        # self.vy = 2
-
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
 
     def update(self, delta):
-        # self.y += self.vy
         self.move(self.directon)
-        # self.vy += 1
 
 class Monster:
     MONSTER_SPEED = 1
@@ -95,7 +91,6 @@ class Coin:
 
     def update(self, delta):
         self.y -= Coin.COIN_SPEED
-        # self.is_position_negative()
         if self.y < -20:
             self.y = SCREEN_HEIGHT
             self.x = randint(50, 400)
@@ -134,6 +129,7 @@ class World:
         self.level_monster = 2
         self.hp = 2
         self.st = False
+        self.high_score_coin = 0
 
     def increase_score(self):
         self.score += 1
@@ -179,6 +175,16 @@ class World:
 
     def die(self):
         self.state = World.STATE_DEAD
+        f = open("score.txt", "r")
+        high_score = str(f.read())
+        if int(high_score) < self.score:
+            old_score = str(self.score)
+            write_new_score = open("score.txt", "w")
+            write_new_score.write(old_score)
+            write_new_score.close()
+            self.high_score_coin = self.score
+        else:
+            self.high_score_coin = int(high_score)
 
     def is_dead(self):
         return self.state == World.STATE_DEAD
@@ -205,8 +211,6 @@ class World:
                 if j.hit(self.player):
                     j.y = SCREEN_HEIGHT
                     self.player_hit()
-
-        # if self.get_level() >= 0 and self.get_level() 
         for i in self.coin:
             i.update(delta)
             if i.hit(self.player):
@@ -221,7 +225,6 @@ class World:
             if self.monster.hit(self.player):
                 self.monster.y = SCREEN_HEIGHT
                 self.player_hit()
-        
         self.start_new_game()
 
 

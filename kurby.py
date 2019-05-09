@@ -94,7 +94,7 @@ class KurbyWindow(arcade.Window):
             self.dot_sprite = ModelSprite('images/kur'+str(self.temp_player)+'.png', model=self.world.player)
 
     def night_back(self):
-        if self.world.level >= 5:
+        if self.world.level >= 10:
             self.background = arcade.load_texture("images/bg.jpg")
             self.monster_sprite.monster_sprite = arcade.Sprite('images/monster2.png')
 
@@ -136,10 +136,16 @@ class KurbyWindow(arcade.Window):
         for i in self.hp:
             arcade.draw_texture_rectangle(self.width - 360+temp, self.height - 53,10, 12,i)
             temp += 15
-
+    
+    def draw_high_score(self):
+        arcade.draw_text(' High Score : '+str(self.world.high_score_coin),
+                         125,
+                         400,
+                         arcade.color.BLACK,
+                         20, )
+        
     def on_draw(self):
         arcade.start_render()
-        # Draw the background texture
         self.draw_background()
         for i in self.coin_sprite:
             i.draw()
@@ -149,11 +155,11 @@ class KurbyWindow(arcade.Window):
             j.draw()
         self.monster_sprite.draw()
 
-
         if len(self.hp) == 0:
             self.world.die()
             texture = self.menus['gameover']
             arcade.draw_texture_rectangle(self.width//2, self.height//2 + 50, texture.width, texture.height, texture, 0)
+            self.draw_high_score()
             texture = self.menus['play']
             arcade.draw_texture_rectangle(self.width//2, self.height//2 - 100, texture.width, texture.height, texture, 0)
 

@@ -18,6 +18,9 @@ $ cd https://github.com/narisasingngam/KurbyDuby
 $ python kurby.py
 ```
 ----
+## Control
+- Move left and right for moving player
+---
 ## Author
 
 Narisa Singnam 6010545820

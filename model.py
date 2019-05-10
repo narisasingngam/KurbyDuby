@@ -175,8 +175,8 @@ class World:
 
     def die(self):
         self.state = World.STATE_DEAD
-        f = open("score.txt", "r")
-        high_score = str(f.read())
+        open_file = open("score.txt", "r")
+        high_score = str(open_file.read())
         if int(high_score) < self.score:
             old_score = str(self.score)
             write_new_score = open("score.txt", "w")
